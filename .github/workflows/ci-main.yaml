@@ -1,8 +1,6 @@
 name: Main Branch Pipeline
 on:
-  push:
-    branches:
-      - 'main'
+  workflow_call:
 run-name: ${{ github.sha }} | ${{ github.event.head_commit.message }}
 jobs:
   UNIT-TESTS:
