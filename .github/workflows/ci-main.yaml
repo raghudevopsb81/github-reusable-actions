@@ -5,7 +5,6 @@ run-name: ${{ github.sha }} | ${{ github.event.head_commit.message }}
 jobs:
   UNIT-TESTS:
     runs-on: self-hosted
-    needs: build
     steps:
       - uses: actions/checkout@v4
       - run: |
@@ -13,7 +12,7 @@ jobs:
 
   build:
     runs-on: self-hosted
-    needs: tests
+    needs: UNIT-TESTS
     steps:
       - uses: actions/checkout@v4
       - run: |
