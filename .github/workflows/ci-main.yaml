@@ -33,6 +33,7 @@ jobs:
       - uses: actions/checkout@v4
         name: CheckOut Code
       - run: |
+          aws eks update-kubeconfig  --name dev-eks
           LB=$(kubectl get svc argocd-server -n argocd --output json | jq '.status.loadBalancer.ingress[0].hostname' | sed -e 's/"//g')
           PASS=$(kubectl get secrets argocd-initial-admin-secret -n argocd --template={{.data.password}} | base64 --decode)
           argocd login $LB --username admin --password $PASS --insecure
