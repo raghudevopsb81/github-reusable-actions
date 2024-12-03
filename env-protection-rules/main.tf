@@ -26,7 +26,7 @@ variable "repos" {
 
 variable "env" {
   default = {
-    "DEV"  = {}
+    "E2E-TESTS"  = {}
     "QA"   = {}
     "UAT"  = {}
     "PROD" = {}
