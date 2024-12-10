@@ -22,8 +22,11 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 897722697588.dkr.ecr.us-east-1.amazonaws.com
-          docker build -t 897722697588.dkr.ecr.us-east-1.amazonaws.com/roboshop-${{ inputs.componentName }}:${{ github.sha }} .
-          docker push 897722697588.dkr.ecr.us-east-1.amazonaws.com/roboshop-${{ inputs.componentName }}:${{ github.sha }}
+          aws ecr   describe-images --repository-name roboshop-${{ inputs.componentName }} | grep ${{ github.sha }} &>/dev/null
+          if [ $? -ne 0 ]; then
+            docker build -t 897722697588.dkr.ecr.us-east-1.amazonaws.com/roboshop-${{ inputs.componentName }}:${{ github.sha }} .
+            docker push 897722697588.dkr.ecr.us-east-1.amazonaws.com/roboshop-${{ inputs.componentName }}:${{ github.sha }}
+          fi
 
   DEV:
     runs-on: self-hosted
@@ -34,9 +37,8 @@ jobs:
         name: CheckOut Code
       - run: |
           aws eks update-kubeconfig  --name dev-eks
-          LB=$(kubectl get svc argocd-server -n argocd --output json | jq '.status.loadBalancer.ingress[0].hostname' | sed -e 's/"//g')
           PASS=$(kubectl get secrets argocd-initial-admin-secret -n argocd --template={{.data.password}} | base64 --decode)
-          argocd login $LB --username admin --password $PASS --insecure
+          argocd login argocd-dev.rdevopsb81.online --username admin --password $PASS --insecure
         name: ArgoCD login
       - run: |
           argocd app create ${{ inputs.componentName }} --repo https://github.com/raghudevopsb81/roboshop-helm.git  --path . --dest-namespace default --dest-server https://kubernetes.default.svc  --values env-dev/${{ inputs.componentName }}.yaml  --helm-set COMMIT_ID=${{ github.sha }} --upsert
