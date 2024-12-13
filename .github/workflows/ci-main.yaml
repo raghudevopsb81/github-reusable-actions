@@ -37,12 +37,12 @@ jobs:
         name: CheckOut Code
       - run: |
           aws eks update-kubeconfig --name dev-eks
-          PASS=$(kubectl get secrets argocd-initial-admin-secret -n argocd --template={{.data.password}} | base64 --decode)
-          argocd login argocd-dev.rdevopsb81.online --username admin --password $PASS --insecure --skip-test-tls --grpc-web
+          echo PASS=$(kubectl get secrets argocd-initial-admin-secret -n argocd --template={{.data.password}} | base64 --decode)
+          echo argocd login argocd-dev.rdevopsb81.online --username admin --password $PASS --insecure --skip-test-tls --grpc-web
         name: ArgoCD login
       - run: |
-          echo argocd app create ${{ inputs.componentName }} --repo https://github.com/raghudevopsb81/roboshop-helm.git  --path . --dest-namespace default --dest-server https://kubernetes.default.svc  --values env-dev/${{ inputs.componentName }}.yaml  --helm-set COMMIT_ID=${{ github.sha }} --upsert
-          echo argocd app sync ${{ inputs.componentName }}
+          argocd app create ${{ inputs.componentName }} --repo https://github.com/raghudevopsb81/roboshop-helm.git  --path . --dest-namespace default --dest-server https://kubernetes.default.svc  --values env-dev/${{ inputs.componentName }}.yaml  --helm-set COMMIT_ID=${{ github.sha }} --upsert
+          argocd app sync ${{ inputs.componentName }}
 
   QA:
     runs-on: self-hosted
