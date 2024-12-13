@@ -41,8 +41,8 @@ jobs:
           argocd login argocd-dev.rdevopsb81.online --username admin --password $PASS --insecure --skip-test-tls --grpc-web
         name: ArgoCD login
       - run: |
-          argocd app create ${{ inputs.componentName }} --repo https://github.com/raghudevopsb81/roboshop-helm.git  --path . --dest-namespace default --dest-server https://kubernetes.default.svc  --values env-dev/${{ inputs.componentName }}.yaml  --helm-set COMMIT_ID=${{ github.sha }} --upsert
-          argocd app sync ${{ inputs.componentName }}
+          echo argocd app create ${{ inputs.componentName }} --repo https://github.com/raghudevopsb81/roboshop-helm.git  --path . --dest-namespace default --dest-server https://kubernetes.default.svc  --values env-dev/${{ inputs.componentName }}.yaml  --helm-set COMMIT_ID=${{ github.sha }} --upsert
+          echo argocd app sync ${{ inputs.componentName }}
 
   QA:
     runs-on: self-hosted
