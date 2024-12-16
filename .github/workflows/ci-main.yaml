@@ -31,7 +31,7 @@ jobs:
           fi
           e=$(aws ecr describe-images --repository-name roboshop-${{ inputs.componentName }} | grep ${{ github.sha }} | wc -l)
           if [ $e -eq 0 ]; then
-            docker build -e NR_API_KEY=${{ secrets.NR_API_KEY }} -t 897722697588.dkr.ecr.us-east-1.amazonaws.com/roboshop-${{ inputs.componentName }}:${{ github.sha }} .
+            docker build --build-arg NR_API_KEY=${{ secrets.NR_API_KEY }} -t 897722697588.dkr.ecr.us-east-1.amazonaws.com/roboshop-${{ inputs.componentName }}:${{ github.sha }} .
             docker push 897722697588.dkr.ecr.us-east-1.amazonaws.com/roboshop-${{ inputs.componentName }}:${{ github.sha }}
           fi
 
