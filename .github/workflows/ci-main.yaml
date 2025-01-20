@@ -18,9 +18,22 @@ jobs:
       - run: |
           echo npm test
 
-  build:
+  SECURITY-SCANS:
     runs-on: self-hosted
     needs: UNIT-TESTS
+    steps:
+      - uses: actions/checkout@v4
+      - name: Code Quality Checks
+        run: echo Code Quality Checks
+      - name: SAST Scan
+        run: echo SAST Scan
+      - name: SCA Check
+        run: echo SCA Check
+
+
+  build:
+    runs-on: self-hosted
+    needs: SECURITY-SCANS
     steps:
       - uses: actions/checkout@v4
       - run: |
